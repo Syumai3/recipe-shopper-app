@@ -15,6 +15,9 @@ erDiagram
     menus  ||--o{ menu_recipes : "含む"
     shopping_lists  ||--o{ shopping_ingredients : "含む"
     ingredients ||--o{ shopping_ingredients : "含まれる"
+    ingredients ||--o{ ingredients_unit : "含む"
+    ingredients_unit ||--o{ shopping_ingredients : "使われる"
+    ingredients_unit ||--o{ recipe_ingredients : "使われる"
 
 
     users {
@@ -41,8 +44,8 @@ erDiagram
         int id PK "ID"
         int recipe_id FK "recipeのID"
         int ingredient_id FK "ingredientのID"
+        int recipe_ingredients FK "recipe_ingredientsのID"
         float quantity "量"
-        varchar unit "単位"
         datetime created_at "作成日"
         datetime updated_at "更新日"
     }
@@ -50,8 +53,16 @@ erDiagram
     ingredients {
         int id PK "ID"
         varchar name "材料名"
-        varchar unit "単位"
         int category "材料カテゴリ"
+        datetime created_at "作成日"
+        datetime updated_at "更新日"
+    }
+
+     ingredients_unit {
+        int id PK "ID"
+        int ingredients FK "ingredientsのID"
+        int recipe_ingredients FK "recipe_ingredientsのID"
+        varchar name "材料名"
         datetime created_at "作成日"
         datetime updated_at "更新日"
     }
@@ -86,8 +97,8 @@ erDiagram
         int id PK "ID"
         int shopping_list_id FK "shopping_listのID"
         int ingredient_id FK "ingredientのID"
+        int recipe_ingredients FK "recipe_ingredientsのID"
         float quantity "量"
-        varchar unit "単位"
         boolean is_checked "チェックボックス"
         datetime created_at "作成日"
         datetime updated_at "更新日"
