@@ -9,12 +9,12 @@ erDiagram
     users ||--o{ recipes : "作成する"
     users ||--o{ menus : "作成する"
     recipes ||--o{ recipe_ingredients : "含む"
-    recipes ||--o{ menu_items : "含まれる"
+    recipes ||--o{ menu_recipes : "含まれる"
     ingredients ||--o{ recipe_ingredients : "使われる"
     menus  ||--o{ shopping_lists : "作成する"
-    menus  ||--o{ menu_items : "含む"
-    shopping_lists  ||--o{ shopping_list_items : "含む"
-    ingredients ||--o{ shopping_list_items : "含まれる"
+    menus  ||--o{ menu_recipes : "含む"
+    shopping_lists  ||--o{ shopping_ingredients : "含む"
+    ingredients ||--o{ shopping_ingredients : "含まれる"
 
 
     users {
@@ -65,7 +65,7 @@ erDiagram
         datetime updated_at "更新日"
     }
 
-    menu_items {
+    menu_recipes {
         int id PK "ID"
         int menu_id FK "menuのID"
         int recipe_id FK "recipeのID"
@@ -82,7 +82,7 @@ erDiagram
         datetime updated_at "更新日"
     }
 
-     shopping_list_items {
+     shopping_ingredients {
         int id PK "ID"
         int shopping_list_id FK "shopping_listのID"
         int ingredient_id FK "ingredientのID"
