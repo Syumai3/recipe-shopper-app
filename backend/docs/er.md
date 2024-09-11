@@ -13,8 +13,8 @@ erDiagram
     ingredients ||--o{ recipe_ingredients : "使われる"
     menus  ||--o{ shopping_lists : "作成する"
     menus  ||--o{ menu_recipes : "含む"
-    shopping_lists  ||--o{ shopping_ingredients : "含む"
-    ingredients ||--o{ shopping_ingredients : "含まれる"
+    shopping_lists  ||--o{ shopping_lists_ingredients : "含む"
+    ingredients ||--o{ shopping_lists_ingredients : "含まれる"
     ingredients ||--o{ units : "使う"
 
     users {
