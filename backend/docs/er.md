@@ -13,8 +13,8 @@ erDiagram
     ingredients ||--o{ recipe_ingredients : "使われる"
     menus  ||--o{ shopping_lists : "作成する"
     menus  ||--o{ menu_recipes : "含む"
-    shopping_lists  ||--o{ shopping_lists_ingredients : "含む"
-    ingredients ||--o{ shopping_lists_ingredients : "含まれる"
+    shopping_lists  ||--o{ shopping_list_ingredients : "含む"
+    ingredients ||--o{ shopping_list_ingredients : "含まれる"
     ingredients ||--o{ units : "使う"
 
     users {
@@ -88,11 +88,11 @@ erDiagram
         datetime updated_at "更新日"
     }
 
-     shopping_lists_ingredients {
+     shopping_list_ingredients {
         int id PK "ID"
         int shopping_list_id FK "shopping_listのID"
         int ingredient_id FK "ingredientのID"
-        int recipe_ingredients FK "recipe_ingredientsのID"
+        "recipe_ingredientsのID"
         float quantity "量"
         boolean is_checked "チェックボックス"
         datetime created_at "作成日"
