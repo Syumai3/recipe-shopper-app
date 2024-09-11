@@ -15,9 +15,9 @@ erDiagram
     menus  ||--o{ menu_recipes : "含む"
     shopping_lists  ||--o{ shopping_ingredients : "含む"
     ingredients ||--o{ shopping_ingredients : "含まれる"
-    ingredients ||--o{ ingredients_unit : "含む"
-    ingredients_unit ||--o{ shopping_ingredients : "使われる"
-    ingredients_unit ||--o{ recipe_ingredients : "使われる"
+    ingredients ||--o{ units : "含む"
+    units ||--o{ shopping_ingredients : "使われる"
+    units ||--o{ recipe_ingredients : "使われる"
 
 
     users {
@@ -58,11 +58,11 @@ erDiagram
         datetime updated_at "更新日"
     }
 
-     ingredients_unit {
+     units {
         int id PK "ID"
         int ingredients FK "ingredientsのID"
         int recipe_ingredients FK "recipe_ingredientsのID"
-        varchar name "材料名"
+        varchar unit "単位"
         datetime created_at "作成日"
         datetime updated_at "更新日"
     }
