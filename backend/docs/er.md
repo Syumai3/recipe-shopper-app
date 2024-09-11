@@ -92,7 +92,6 @@ erDiagram
         int id PK "ID"
         int shopping_list_id FK "shopping_listのID"
         int ingredient_id FK "ingredientのID"
-        "recipe_ingredientsのID"
         float quantity "量"
         boolean is_checked "チェックボックス"
         datetime created_at "作成日"
