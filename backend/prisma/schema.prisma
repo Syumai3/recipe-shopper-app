@@ -32,16 +32,17 @@ model Recipe {
   updatedAt         DateTime           @updatedAt
   user              User               @relation(fields: [userId], references: [id], onDelete: Cascade)
   recipeIngredients RecipeIngredient[]
-  menuItems         MenuItem[]
+  menuRecipes       MenuRecipe[]
 }
 
 model Ingredient {
   id                Int                @id @default(autoincrement())
+  unitId            Int
   name              String
-  unit              String
   category          String
   createdAt         DateTime           @default(now())
   updatedAt         DateTime           @updatedAt
+  unit              Unit @relation(fields:[unitId], references: [id])
   recipeIngredients RecipeIngredient[]
   shoppingListItems ShoppingListItem[]
 }
@@ -51,7 +52,6 @@ model RecipeIngredient {
   recipeId     Int
   ingredientId Int
   quantity     Float
-  unit         String
   createdAt    DateTime   @default(now())
   updatedAt    DateTime   @updatedAt
   recipe       Recipe     @relation(fields: [recipeId], references: [id])
@@ -66,11 +66,11 @@ model Menu {
   createdAt    DateTime       @default(now())
   updatedAt    DateTime       @updatedAt
   user         User           @relation(fields: [userId], references: [id])
-  menuItems    MenuItem[]
+  menuRecipes  MenuRecipe[]
   shoppingList ShoppingList[]
 }
 
-model MenuItem {
+model MenuRecipe {
   id          Int         @id @default(autoincrement())
   menuId      Int
   recipeId    Int
@@ -96,12 +96,19 @@ model ShoppingListItem {
   shoppingListId Int
   ingredientId   Int
   quantity       Float
-  unit           String
   isChecked      Boolean      @default(false)
   createdAt      DateTime     @default(now())
   updatedAt      DateTime     @updatedAt
   shoppingList   ShoppingList @relation(fields: [shoppingListId], references: [id])
   ingredient     Ingredient   @relation(fields: [ingredientId], references: [id])
+}
+
+model Unit {
+  id        Int      @id @default(autoincrement())
+  unit      String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  ingredient Ingredient[]
 }
 
 enum DayOfWeek {
