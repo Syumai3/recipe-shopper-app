@@ -50,7 +50,7 @@ erDiagram
         int id PK "ID"
         int units_id FK "unitsのID"
         varchar name "材料名"
-        int category "材料カテゴリ"
+        string category "材料カテゴリ"
         datetime created_at "作成日"
         datetime updated_at "更新日"
     }
