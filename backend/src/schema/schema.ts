@@ -18,15 +18,19 @@ type Recipe {
     name:String!
     description:String
     ingredients:[String!]!
-    cereatedBy:User!
+    createdBy:User!
     userId: ID! 
 }
 
-type Query {
-    user(id:ID!):User
-    users:[User!]!
-    recipe(id:ID!):Recipe
-    recipes:[Recipe!]!
+type Menu {
+    id:ID!
+    name:String!
+    description:String
+    startDate: DateTime!
+    endDate: DateTime!
+    createdAt: DateTime!
+    updatedAt: DateTime!
+    user: User!
 }
 
 input CreateUserInput {
@@ -41,6 +45,12 @@ input IngredientInput{
     unit:String!
 }
 
+type Query {
+    user(id:ID!):User
+    users:[User!]!
+    recipe(id:ID!):Recipe
+    recipes:[Recipe!]!
+}
 
 type Mutation {
     createUser(input: CreateUserInput!): User!
