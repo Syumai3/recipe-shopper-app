@@ -1,6 +1,7 @@
 import { gql } from "apollo-server";
 
 export const typeDefs = gql`
+ scalar DateTime
 
 type User {
     id:ID!
