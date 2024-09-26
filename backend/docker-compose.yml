@@ -1,8 +1,7 @@
-version: '3.8'
 services:
   db:
     image: postgres:13
-    restart: always
+    restart: no
     environment:
       POSTGRES_DB: recipe_shopper
       POSTGRES_USER: myuser
