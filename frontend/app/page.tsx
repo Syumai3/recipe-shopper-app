@@ -1,4 +1,11 @@
-import { Box, HStack, Spinner, Stack, VStack } from "@chakra-ui/react";
+import {
+	Box,
+	Link as ChakraLink,
+	HStack,
+	Spinner,
+	Stack,
+	VStack,
+} from "@chakra-ui/react";
 
 export default function HomePage() {
 	return (
@@ -9,7 +16,32 @@ export default function HomePage() {
 				bgColor="orange.50"
 				borderRadius={10}
 			>
-				<h1>サイドバー</h1>
+				<VStack align="start" m={5}>
+					<ChakraLink
+						href="./menu"
+						fontSize="xl"
+						color="gray.600"
+						_hover={{ textDecoration: "none", color: "gray.400" }}
+					>
+						献立
+					</ChakraLink>
+					<ChakraLink
+						href="./createRecipe"
+						fontSize="xl"
+						color="gray.600"
+						_hover={{ textDecoration: "none", color: "gray.400" }}
+					>
+						レシピを作成する
+					</ChakraLink>
+					<ChakraLink
+						href="./recipes"
+						fontSize="xl"
+						color="gray.600"
+						_hover={{ textDecoration: "none", color: "gray.400" }}
+					>
+						レシピを確認する
+					</ChakraLink>
+				</VStack>
 			</Box>
 
 			<VStack flexGrow={1} spacing={0}>
