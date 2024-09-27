@@ -1,6 +1,8 @@
+import { Box, HStack, VStack } from "@chakra-ui/react";
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import ApolloChakraProvider from "./ApolloChakraProvider";
+import Sidebar from "./components/Sidebar";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -17,7 +19,30 @@ export default function RootLayout({
 	return (
 		<html lang="ja">
 			<body className={inter.className}>
-				<ApolloChakraProvider>{children}</ApolloChakraProvider>
+				<ApolloChakraProvider>
+					<HStack
+						h="100vh"
+						w="100%"
+						alignItems="stretch"
+						bgColor="orange.100"
+						p={4}
+					>
+						<Sidebar />
+						<VStack flexGrow={1} spacing={0}>
+							<Box h="60px" w="100%" bgColor="orange.50" borderTopRadius={10}>
+								<h1>ヘッダー</h1>
+							</Box>
+							<Box
+								flexGrow={1}
+								w="100%"
+								bgColor="orange.50"
+								borderBottomRadius={10}
+							>
+								{children}
+							</Box>
+						</VStack>
+					</HStack>
+				</ApolloChakraProvider>
 			</body>
 		</html>
 	);
