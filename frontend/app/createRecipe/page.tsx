@@ -34,8 +34,10 @@ function CreateRecipe() {
   };
   // 材料の削除
   const removeIngredient = (index: number) => {
+    if (ingredients.length === 1) return;
     setIngredients(ingredients.filter((_, i) => i !== index));
   };
+
   // 材料の更新
   const updateIngredient = (
     index: number,
@@ -116,16 +118,6 @@ function CreateRecipe() {
           材料を追加
         </Button>
       </FormControl>
-
-      <Stack>
-        <FormLabel htmlFor="ingredients">数量</FormLabel>
-        <Input id="ingredients" w="100%" variant="outline" />
-      </Stack>
-      <Stack>
-        <FormLabel htmlFor="ingredients">単位</FormLabel>
-        <Input id="ingredients" w="100%" variant="outline" />
-      </Stack>
-
       <FormLabel htmlFor="description">説明</FormLabel>
       <Input
         value={description}
