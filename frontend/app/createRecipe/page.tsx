@@ -60,7 +60,8 @@ function CreateRecipe() {
 
   return (
     <Stack spacing={3} w="600px" m={5}>
-      <SendImageForm />
+      {/* 画像データアップロードに関しては後回しにする */}
+      {/* <SendImageForm /> */}
       <FormControl>
         <FormLabel htmlFor="recipe-name">レシピ名</FormLabel>
         <Input
