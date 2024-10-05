@@ -1,4 +1,4 @@
-"use client";
+'use client';
 
 import {
   Box,
@@ -7,17 +7,17 @@ import {
   FormLabel,
   HStack,
   Image,
-} from "@chakra-ui/react";
-import React, { useRef, useState } from "react";
-import { ImageInput } from "./ImageInput";
+} from '@chakra-ui/react';
+import React, { useRef, useState } from 'react';
+import { ImageInput } from './ImageInput';
 
-const IMAGE_ID = "image";
+const IMAGE_ID = 'image';
 
 export function SendImageForm() {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [imageFile, setImageFile] = useState<File | null>(null);
-  const [fileName, setFileName] = useState("");
-  const [imageSource, setImageSource] = useState("");
+  const [fileName, setFileName] = useState('');
+  const [imageSource, setImageSource] = useState('');
 
   const selectFile = () => {
     if (!fileInputRef.current) return;
@@ -45,10 +45,10 @@ export function SendImageForm() {
 
   // キャンセルボタンを押した際の処理
   const handleClickCancelButton = () => {
-    setFileName("");
-    setImageSource("");
+    setFileName('');
+    setImageSource('');
     if (fileInputRef.current) {
-      fileInputRef.current.value = "";
+      fileInputRef.current.value = '';
     }
   };
 
@@ -58,20 +58,20 @@ export function SendImageForm() {
     <Box
       as="form"
       w="250px"
+      h="150px"
       p={4}
       borderWidth={1}
       borderRadius="md"
       boxShadow="md"
     >
-      <FormControl mb={4}>
+      <FormControl mb={3}>
         <Button
           onClick={selectFile}
           variant="outline"
           width="100%"
-          height="auto"
+          height="80px"
           aspectRatio={16 / 9}
         >
-          {" "}
           {fileName ? (
             <Image
               src={imageSource}
@@ -81,7 +81,7 @@ export function SendImageForm() {
               maxHeight="100%"
             />
           ) : (
-            "画像をアップロード"
+            '画像をアップロード'
           )}
         </Button>
         <ImageInput
@@ -94,7 +94,7 @@ export function SendImageForm() {
       {/* キャンセルボタン */}
       <HStack spacing={4} justify="flex-end">
         <Button onClick={handleClickCancelButton} variant="outline" size="sm">
-          × キャンセル
+          ×
         </Button>
       </HStack>
     </Box>
