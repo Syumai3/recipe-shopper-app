@@ -4,7 +4,7 @@ export const typeDefs = gql`
   scalar DateTime
 
   type User {
-    id: ID!
+    id: Int!
     username: String!
     email: String!
     createdAt: DateTime!
@@ -14,16 +14,21 @@ export const typeDefs = gql`
   }
 
   type Recipe {
-    id: ID!
+    id: Int!
     name: String!
     description: String
-    ingredients: [String!]!
+    recipeIngredients: [RecipeIngredient!]!
     createdBy: User!
-    userId: ID!
+    userId: Int!
+  }
+
+  type RecipeIngredient {
+    ingredient: Ingredient!
+    quantity: Float!
   }
 
   type Menu {
-    id: ID!
+    id: Int!
     name: String!
     description: String
     startDate: DateTime!
@@ -40,25 +45,40 @@ export const typeDefs = gql`
   }
 
   input IngredientInput {
-    ingredientId: ID!
+    ingredientId: Int!
     quantity: Float!
     unit: String!
   }
 
+  input CreateRecipeInput {
+    name: String!
+    description: String
+    ingredients: [IngredientInput!]!
+    userId: Int!
+  }
+
+  type Ingredient {
+    id: Int!
+    name: String!
+    category: String
+    unit: Unit
+  }
+
+  type Unit {
+    id: Int!
+    unit: String!
+  }
+
   type Query {
-    user(id: ID!): User
+    user(id: Int!): User
     users: [User!]!
-    recipe(id: ID!): Recipe
+    recipe(id: Int!): Recipe
     recipes: [Recipe!]!
+    searchIngredients(searchTerm: String!): [Ingredient!]!
   }
 
   type Mutation {
     createUser(input: CreateUserInput!): User!
-    createRecipe(
-      name: String!
-      description: String
-      ingredients: [IngredientInput!]!
-      userId: ID!
-    ): Recipe!
+    createRecipe(input: CreateRecipeInput!): Recipe!
   }
 `;
