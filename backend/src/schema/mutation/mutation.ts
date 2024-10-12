@@ -43,7 +43,9 @@ export const Mutation = {
       },
       include: {
         user: true,
-        recipeIngredients: { include: { ingredient: true } },
+        recipeIngredients: {
+          include: { ingredient: { include: { unit: true } } },
+        },
       },
     });
   },
