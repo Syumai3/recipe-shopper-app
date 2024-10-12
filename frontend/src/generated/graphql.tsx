@@ -18,14 +18,29 @@ export type Scalars = {
   DateTime: { input: any; output: any; }
 };
 
+export type CreateRecipeInput = {
+  description?: InputMaybe<Scalars['String']['input']>;
+  ingredients: Array<IngredientInput>;
+  name: Scalars['String']['input'];
+  userId: Scalars['Int']['input'];
+};
+
 export type CreateUserInput = {
   email: Scalars['String']['input'];
   password: Scalars['String']['input'];
   username: Scalars['String']['input'];
 };
 
+export type Ingredient = {
+  __typename?: 'Ingredient';
+  category?: Maybe<Scalars['String']['output']>;
+  id: Scalars['Int']['output'];
+  name: Scalars['String']['output'];
+  unit?: Maybe<Unit>;
+};
+
 export type IngredientInput = {
-  ingredientId: Scalars['ID']['input'];
+  ingredientId: Scalars['Int']['input'];
   quantity: Scalars['Float']['input'];
   unit: Scalars['String']['input'];
 };
@@ -35,7 +50,7 @@ export type Menu = {
   createdAt: Scalars['DateTime']['output'];
   description?: Maybe<Scalars['String']['output']>;
   endDate: Scalars['DateTime']['output'];
-  id: Scalars['ID']['output'];
+  id: Scalars['Int']['output'];
   name: Scalars['String']['output'];
   startDate: Scalars['DateTime']['output'];
   updatedAt: Scalars['DateTime']['output'];
@@ -50,10 +65,7 @@ export type Mutation = {
 
 
 export type MutationCreateRecipeArgs = {
-  description?: InputMaybe<Scalars['String']['input']>;
-  ingredients: Array<IngredientInput>;
-  name: Scalars['String']['input'];
-  userId: Scalars['ID']['input'];
+  input: CreateRecipeInput;
 };
 
 
@@ -65,35 +77,53 @@ export type Query = {
   __typename?: 'Query';
   recipe?: Maybe<Recipe>;
   recipes: Array<Recipe>;
+  searchIngredients: Array<Ingredient>;
   user?: Maybe<User>;
   users: Array<User>;
 };
 
 
 export type QueryRecipeArgs = {
-  id: Scalars['ID']['input'];
+  id: Scalars['Int']['input'];
+};
+
+
+export type QuerySearchIngredientsArgs = {
+  searchTerm: Scalars['String']['input'];
 };
 
 
 export type QueryUserArgs = {
-  id: Scalars['ID']['input'];
+  id: Scalars['Int']['input'];
 };
 
 export type Recipe = {
   __typename?: 'Recipe';
   createdBy: User;
   description?: Maybe<Scalars['String']['output']>;
-  id: Scalars['ID']['output'];
-  ingredients: Array<Scalars['String']['output']>;
+  id: Scalars['Int']['output'];
   name: Scalars['String']['output'];
-  userId: Scalars['ID']['output'];
+  recipeIngredients: Array<RecipeIngredient>;
+  userId: Scalars['Int']['output'];
+};
+
+export type RecipeIngredient = {
+  __typename?: 'RecipeIngredient';
+  ingredient: Ingredient;
+  quantity: Scalars['Float']['output'];
+};
+
+export type Unit = {
+  __typename?: 'Unit';
+  id: Scalars['Int']['output'];
+  unit: Scalars['String']['output'];
 };
 
 export type User = {
   __typename?: 'User';
   createdAt: Scalars['DateTime']['output'];
   email: Scalars['String']['output'];
-  id: Scalars['ID']['output'];
+  id: Scalars['Int']['output'];
   menus: Array<Menu>;
   recipes?: Maybe<Array<Recipe>>;
   updatedAt: Scalars['DateTime']['output'];
@@ -103,7 +133,14 @@ export type User = {
 export type GetRecipesQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type GetRecipesQuery = { __typename?: 'Query', recipes: Array<{ __typename?: 'Recipe', id: string, name: string, description?: string | null }> };
+export type GetRecipesQuery = { __typename?: 'Query', recipes: Array<{ __typename?: 'Recipe', id: number, name: string, description?: string | null }> };
+
+export type SearchIngredientsQueryVariables = Exact<{
+  searchTerm: Scalars['String']['input'];
+}>;
+
+
+export type SearchIngredientsQuery = { __typename?: 'Query', searchIngredients: Array<{ __typename?: 'Ingredient', id: number, name: string, unit?: { __typename?: 'Unit', id: number, unit: string } | null }> };
 
 
 export const GetRecipesDocument = gql`
@@ -147,3 +184,48 @@ export type GetRecipesQueryHookResult = ReturnType<typeof useGetRecipesQuery>;
 export type GetRecipesLazyQueryHookResult = ReturnType<typeof useGetRecipesLazyQuery>;
 export type GetRecipesSuspenseQueryHookResult = ReturnType<typeof useGetRecipesSuspenseQuery>;
 export type GetRecipesQueryResult = Apollo.QueryResult<GetRecipesQuery, GetRecipesQueryVariables>;
+export const SearchIngredientsDocument = gql`
+    query SearchIngredients($searchTerm: String!) {
+  searchIngredients(searchTerm: $searchTerm) {
+    id
+    name
+    unit {
+      id
+      unit
+    }
+  }
+}
+    `;
+
+/**
+ * __useSearchIngredientsQuery__
+ *
+ * To run a query within a React component, call `useSearchIngredientsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useSearchIngredientsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useSearchIngredientsQuery({
+ *   variables: {
+ *      searchTerm: // value for 'searchTerm'
+ *   },
+ * });
+ */
+export function useSearchIngredientsQuery(baseOptions: Apollo.QueryHookOptions<SearchIngredientsQuery, SearchIngredientsQueryVariables> & ({ variables: SearchIngredientsQueryVariables; skip?: boolean; } | { skip: boolean; }) ) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<SearchIngredientsQuery, SearchIngredientsQueryVariables>(SearchIngredientsDocument, options);
+      }
+export function useSearchIngredientsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<SearchIngredientsQuery, SearchIngredientsQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<SearchIngredientsQuery, SearchIngredientsQueryVariables>(SearchIngredientsDocument, options);
+        }
+export function useSearchIngredientsSuspenseQuery(baseOptions?: Apollo.SkipToken | Apollo.SuspenseQueryHookOptions<SearchIngredientsQuery, SearchIngredientsQueryVariables>) {
+          const options = baseOptions === Apollo.skipToken ? baseOptions : {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<SearchIngredientsQuery, SearchIngredientsQueryVariables>(SearchIngredientsDocument, options);
+        }
+export type SearchIngredientsQueryHookResult = ReturnType<typeof useSearchIngredientsQuery>;
+export type SearchIngredientsLazyQueryHookResult = ReturnType<typeof useSearchIngredientsLazyQuery>;
+export type SearchIngredientsSuspenseQueryHookResult = ReturnType<typeof useSearchIngredientsSuspenseQuery>;
+export type SearchIngredientsQueryResult = Apollo.QueryResult<SearchIngredientsQuery, SearchIngredientsQueryVariables>;

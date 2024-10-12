@@ -6,3 +6,15 @@ query GetRecipes {
     description
   }
 }
+
+## 材料を検索する
+query SearchIngredients($searchTerm: String!) {
+  searchIngredients(searchTerm: $searchTerm) {
+    id
+    name
+    unit {
+      id
+      unit
+    }
+  }
+}
