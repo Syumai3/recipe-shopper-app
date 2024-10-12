@@ -11,12 +11,16 @@ import {
   List,
   ListItem,
   Stack,
+  useToast,
   VStack,
 } from '@chakra-ui/react';
 import { AddIcon, DeleteIcon } from '@chakra-ui/icons';
 import React, { useEffect, useRef, useState } from 'react';
 import { SendImageForm } from '../components/SendImageForm';
-import { useSearchIngredientsLazyQuery } from '@/src/generated/graphql';
+import {
+  useCreateRecipeMutation,
+  useSearchIngredientsLazyQuery,
+} from '@/src/generated/graphql';
 import { useDebounceCallback } from '@react-hook/debounce';
 
 type Ingredient = {
@@ -29,7 +33,7 @@ type Ingredient = {
 function CreateRecipe() {
   const [recipeName, setRecipeName] = useState('');
   const [ingredients, setIngredients] = useState<Ingredient[]>([
-    { name: '', quantity: 0, unit: '' },
+    { id: undefined, name: '', quantity: 0, unit: '' },
   ]);
   const [description, setDescription] = useState('');
   // 材料を検索するクエリ
@@ -68,7 +72,11 @@ function CreateRecipe() {
   ) => {
     const newIngredients = ingredients.map((ingredient, i) => {
       if (i === index) {
-        return { ...ingredient, [field]: value };
+        return {
+          ...ingredient,
+          [field]:
+            field === 'quantity' ? parseFloat(value.toString()) || 0 : value,
+        };
       }
       return ingredient;
     });
@@ -100,11 +108,6 @@ function CreateRecipe() {
     setSelectedIngredientIndex(null);
   };
 
-  const handleSubmit = () => {
-    // バックエンドへ送信する処理を書く
-    console.log({ recipeName, ingredients, description });
-  };
-
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (listRef.current && !listRef.current.contains(event.target as Node)) {
@@ -117,6 +120,52 @@ function CreateRecipe() {
       document.removeEventListener('mousedown', handleClickOutside);
     };
   }, []);
+
+  const toast = useToast();
+
+  const [createRecipe, { loading: createRecipeLoading }] =
+    useCreateRecipeMutation();
+
+  // レシピを登録する関数
+  const handleSubmit = async () => {
+    try {
+      const result = await createRecipe({
+        variables: {
+          input: {
+            name: recipeName,
+            description,
+            userId: 1, // TODO: ユーザーIDの取得実装が終わるまで1を入れておく
+            ingredients: ingredients.map((ingredient) => ({
+              ingredientId: ingredient.id!,
+              quantity: ingredient.quantity,
+              unit: ingredient.unit,
+            })),
+          },
+        },
+      });
+
+      if (result.data) {
+        toast({
+          title: 'レシピを作成しました',
+          status: 'success',
+          duration: 3000,
+          isClosable: true,
+        });
+      }
+      // フォームをリセットする
+      setRecipeName('');
+      setDescription('');
+      setIngredients([{ name: '', quantity: 0, unit: '' }]);
+    } catch (error) {
+      toast({
+        title: 'エラーが発生しました',
+        status: 'error',
+        duration: 3000,
+        isClosable: true,
+      });
+      console.error('レシピ作成エラー:', error);
+    }
+  };
 
   return (
     <Stack spacing={3} w="600px" m={5}>
@@ -214,7 +263,12 @@ function CreateRecipe() {
         variant="outline"
       />
       <Box display="flex" justifyContent="flex-end">
-        <Button colorScheme="orange" w="100px">
+        <Button
+          colorScheme="orange"
+          w="100px"
+          onClick={handleSubmit}
+          isLoading={createRecipeLoading}
+        >
           登録
         </Button>
       </Box>
