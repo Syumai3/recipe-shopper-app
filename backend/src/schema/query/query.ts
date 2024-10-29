@@ -7,7 +7,7 @@ export const Query = {
   // 特定のユーザーを取得するためのリゾルバ
   user: async (_: unknown, { id }: { id: string }) => {
     return prisma.user.findUnique({
-      where: { id: Number.parseInt(id) },
+      where: { id },
       include: { recipes: true },
     });
   },
@@ -24,10 +24,21 @@ export const Query = {
       include: { user: true },
     });
   },
-  // 全てのレシピを取得するためのリゾルバ
-  recipes: async () => {
+   // 全てのレシピを取得するためのリゾルバ
+   recipes: async () => {
     return prisma.recipe.findMany({
-      include: { user: true },
+      include: {
+        user: true,
+        recipeIngredients: {
+          include: {
+            ingredient: {
+              include: {
+                unit: true
+              }
+            }
+          }
+        }
+      },
     });
   },
   // 材料を検索するためのリゾルバ

@@ -12,10 +12,9 @@ generator client {
 // アプリケーションで使用するモデル
 
 model User {
-  id        Int      @id @default(autoincrement())
+  id        String   @id
   username  String
   email     String   @unique
-  password  String
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
   recipes   Recipe[]
@@ -24,7 +23,7 @@ model User {
 
 model Recipe {
   id                Int                @id @default(autoincrement())
-  userId            Int
+  userId            String
   name              String
   imageUrl          String?
   description       String?
@@ -42,7 +41,7 @@ model Ingredient {
   category          String
   createdAt         DateTime           @default(now())
   updatedAt         DateTime           @updatedAt
-  unit              Unit @relation(fields:[unitId], references: [id])
+  unit              Unit               @relation(fields: [unitId], references: [id])
   recipeIngredients RecipeIngredient[]
   shoppingListItems ShoppingListItem[]
 }
@@ -60,7 +59,7 @@ model RecipeIngredient {
 
 model Menu {
   id           Int            @id @default(autoincrement())
-  userId       Int
+  userId       String
   startDate    DateTime
   endDate      DateTime
   createdAt    DateTime       @default(now())
@@ -104,10 +103,10 @@ model ShoppingListItem {
 }
 
 model Unit {
-  id        Int      @id @default(autoincrement())
-  unit      String
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  id         Int          @id @default(autoincrement())
+  unit       String
+  createdAt  DateTime     @default(now())
+  updatedAt  DateTime     @updatedAt
   ingredient Ingredient[]
 }
 

@@ -4,7 +4,7 @@ export const typeDefs = gql`
   scalar DateTime
 
   type User {
-    id: Int!
+    id: String!
     username: String!
     email: String!
     createdAt: DateTime!
@@ -19,7 +19,7 @@ export const typeDefs = gql`
     description: String
     recipeIngredients: [RecipeIngredient!]!
     createdBy: User!
-    userId: Int!
+    userId: String!
   }
 
   type RecipeIngredient {
@@ -41,20 +41,19 @@ export const typeDefs = gql`
   input CreateUserInput {
     username: String!
     email: String!
-    password: String!
   }
 
   input IngredientInput {
     ingredientId: Int!
     quantity: Float!
-    unit: String!
+    # unit: String!
   }
 
   input CreateRecipeInput {
     name: String!
     description: String
     ingredients: [IngredientInput!]!
-    userId: Int!
+    userId: String!
   }
 
   type Ingredient {
@@ -70,7 +69,7 @@ export const typeDefs = gql`
   }
 
   type Query {
-    user(id: Int!): User
+    user(id: String!): User
     users: [User!]!
     recipe(id: Int!): Recipe
     recipes: [Recipe!]!

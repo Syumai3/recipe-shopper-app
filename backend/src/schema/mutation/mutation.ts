@@ -1,5 +1,6 @@
 import { PrismaClient } from '@prisma/client';
 import { MyContext } from '../../index.js';
+import { v4 as uuidv4 } from 'uuid';
 
 const prisma = new PrismaClient();
 
@@ -10,17 +11,21 @@ type CreateRecipeInput = {
     ingredientId: number;
     quantity: number;
   }[];
-  userId: number;
+  userId: string;
 };
 
 export const Mutation = {
   // ユーザーを作成するためのリゾルバ
   createUser: async (
     _: unknown,
-    { input }: { input: { username: string; email: string; password: string } },
+    { input }: { input: { id:string, username: string; email: string } },
   ) => {
     return prisma.user.create({
-      data: input,
+      data: {
+        id: uuidv4(),  // UUIDを自動生成
+        username: input.username,
+        email: input.email,
+      },
     });
   },
   // レシピを作成するためのリゾルバ
