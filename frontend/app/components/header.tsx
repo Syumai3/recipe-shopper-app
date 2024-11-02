@@ -1,11 +1,18 @@
 'use client';
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useSession, signIn, signOut } from 'next-auth/react';
 import { Box, Button, Flex, Image } from '@chakra-ui/react';
 
 export default function Header() {
   const { data: session, status } = useSession();
 
+  // 動作確認
+  useEffect(() => {
+    if (status === 'authenticated' && session?.user?.id) {
+      console.log('Session:', session);
+      console.log('User ID:', session.user.id);
+    }
+  }, [session, status]);
   return (
     <>
       {/* ここにロゴや他のヘッダー要素を配置できます */}
