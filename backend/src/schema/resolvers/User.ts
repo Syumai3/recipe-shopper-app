@@ -4,7 +4,7 @@ const prisma = new PrismaClient();
 
 export const User = {
 	// 特定のユーザーのレシピを取得するためのリゾルバ
-	recipes: async (parent: { id: number }) => {
+	recipes: async (parent: { id: string }) => {
 		return prisma.recipe.findMany({
 			where: { userId: parent.id },
 		});

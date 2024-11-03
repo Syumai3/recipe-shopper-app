@@ -22,6 +22,8 @@ import {
   useSearchIngredientsLazyQuery,
 } from '@/src/generated/graphql';
 import { useDebounceCallback } from '@react-hook/debounce';
+import { useSession } from 'next-auth/react';
+import { useRouter } from 'next/navigation';
 
 type Ingredient = {
   id?: number;
@@ -31,6 +33,8 @@ type Ingredient = {
 };
 
 function CreateRecipe() {
+  const router = useRouter();
+  const { data: session, status } = useSession();
   const [recipeName, setRecipeName] = useState('');
   const [ingredients, setIngredients] = useState<Ingredient[]>([
     { id: undefined, name: '', quantity: 0, unit: '' },
@@ -128,17 +132,27 @@ function CreateRecipe() {
 
   // レシピを登録する関数
   const handleSubmit = async () => {
+    // 認証チェックを追加
+    if (!session?.user?.id) {
+      toast({
+        title: 'ログインが必要です',
+        status: 'error',
+        duration: 3000,
+        isClosable: true,
+      });
+      return;
+    }
     try {
       const result = await createRecipe({
         variables: {
           input: {
             name: recipeName,
             description,
-            userId: 1, // TODO: ユーザーIDの取得実装が終わるまで1を入れておく
+            userId: session?.user.id,
             ingredients: ingredients.map((ingredient) => ({
               ingredientId: ingredient.id!,
               quantity: ingredient.quantity,
-              unit: ingredient.unit,
+              // unit: ingredient.unit,
             })),
           },
         },
@@ -166,7 +180,31 @@ function CreateRecipe() {
       console.error('レシピ作成エラー:', error);
     }
   };
+  // 非ログイン時の表示
+  if (status === 'unauthenticated') {
+    return (
+      <Box
+        display="flex"
+        flexDirection="column"
+        alignItems="center"
+        justifyContent="center"
+        p={10}
+      >
+        <Box fontSize="lg" mb={4}>
+          レシピを作成するにはログインが必要です
+        </Box>
+      </Box>
+    );
+  }
 
+  // ローディング中の表示
+  if (status === 'loading') {
+    return (
+      <Box p={5}>
+        <Box>読み込み中...</Box>
+      </Box>
+    );
+  }
   return (
     <Stack spacing={3} w="600px" m={5}>
       {/* 画像データアップロードに関しては後回しにする */}
