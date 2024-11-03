@@ -67,11 +67,11 @@ export default function Header() {
       ) : (
         <Button
           onClick={() => signIn('google')}
-          bg="orange.50"
-          color="gray.700"
+          bg="orange.500"
+          color="white"
+          fontWeight="bold"
           _hover={{ bg: 'orange.100' }}
           height="40px"
-          fontWeight="normal"
         >
           登録 / ログイン
         </Button>
