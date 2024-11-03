@@ -39,6 +39,7 @@ export const typeDefs = gql`
   }
 
   input CreateUserInput {
+    id: String!
     username: String!
     email: String!
   }

@@ -2,17 +2,34 @@
 import React, { useEffect } from 'react';
 import { useSession, signIn, signOut } from 'next-auth/react';
 import { Box, Button, Flex, Image } from '@chakra-ui/react';
+import { useCreateUserMutation } from '@/src/generated/graphql';
 
 export default function Header() {
   const { data: session, status } = useSession();
+  const [createUser, { loading, error }] = useCreateUserMutation();
 
   // 動作確認
   useEffect(() => {
-    if (status === 'authenticated' && session?.user?.id) {
-      console.log('Session:', session);
-      console.log('User ID:', session.user.id);
-    }
-  }, [session, status]);
+    const handleAuthentication = async () => {
+      if (status === 'authenticated' && session?.user?.id) {
+        try {
+          const result = await createUser({
+            variables: {
+              input: {
+                id: session.user.id,
+                username: session.user.name || 'Unknown User',
+                email: session.user.email || '',
+              },
+            },
+          });
+          console.log('User save:', result.data);
+        } catch (e) {
+          console.error('Error saving user:', e);
+        }
+      }
+    };
+    handleAuthentication();
+  }, [session, status, createUser]);
   return (
     <>
       {/* ここにロゴや他のヘッダー要素を配置できます */}
