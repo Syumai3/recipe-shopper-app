@@ -69,6 +69,11 @@ export const typeDefs = gql`
     unit: String!
   }
 
+  type ShoppingListItem {
+    ingredient: Ingredient!
+    totalQuantity: Float!
+  }
+
   input UpdateRecipeInput {
     id: Int!
     name: String!
@@ -83,6 +88,7 @@ export const typeDefs = gql`
     recipes: [Recipe!]!
     recipesByUserId(userId: String!): [Recipe!]!
     searchIngredients(searchTerm: String!): [Ingredient!]!
+    myShoppingList(recipeIds: [Int!]!, servings: [Int!]!): [ShoppingListItem!]!
   }
 
   type Mutation {
