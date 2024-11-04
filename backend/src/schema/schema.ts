@@ -89,5 +89,6 @@ export const typeDefs = gql`
     createUser(input: CreateUserInput!): User!
     createRecipe(input: CreateRecipeInput!): Recipe!
     updateRecipe(input: UpdateRecipeInput!): Recipe!
+    deleteRecipe(id: Int!): Recipe!
   }
 `;

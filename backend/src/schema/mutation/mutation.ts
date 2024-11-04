@@ -152,4 +152,49 @@ export const Mutation = {
       throw new Error('レシピの更新に失敗しました');
     }
   },
+  // レシピを削除するためのリゾルバ
+  deleteRecipe: async (_: unknown, { id }: { id: number }) => {
+    try {
+      // トランザクションを使用して、関連データと共に削除
+      return await prisma.$transaction(async (tx) => {
+        // 削除前のレシピ情報を取得
+        const recipe = await tx.recipe.findUnique({
+          where: { id },
+          include: {
+            user: true,
+            recipeIngredients: {
+              include: {
+                ingredient: {
+                  include: {
+                    unit: true,
+                  },
+                },
+              },
+            },
+          },
+        });
+
+        if (!recipe) {
+          throw new Error('Recipe not found');
+        }
+
+        // 関連するrecipeIngredientsを削除
+        await tx.recipeIngredient.deleteMany({
+          where: {
+            recipeId: id,
+          },
+        });
+
+        // 次に、レシピ自体を削除
+        await tx.recipe.delete({
+          where: { id },
+        });
+
+        return recipe;
+      });
+    } catch (error) {
+      console.error('Recipe deletion error:', error);
+      throw new Error('レシピの削除に失敗しました');
+    }
+  },
 };
