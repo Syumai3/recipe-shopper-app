@@ -6,11 +6,19 @@ import {
   ModalHeader,
   ModalCloseButton,
   ModalBody,
+  ModalFooter,
+  Button,
+  ButtonGroup,
   useToast,
 } from '@chakra-ui/react';
+import { useState } from 'react';
 import { RecipeForm, RecipeFormData } from './RecipeForm';
-import { useUpdateRecipeMutation } from '@/src/generated/graphql';
+import {
+  useUpdateRecipeMutation,
+  useDeleteRecipeMutation,
+} from '@/src/generated/graphql';
 import { GetUserRecipesQuery } from '@/src/generated/graphql';
+import { DeleteRecipeDialog } from './DeleteRecipeDialog';
 
 type EditRecipeDialogProps = {
   isOpen: boolean;
@@ -27,6 +35,8 @@ export function EditRecipeDialog({
 }: EditRecipeDialogProps) {
   const toast = useToast();
   const [updateRecipe, { loading }] = useUpdateRecipeMutation();
+  const [deleteRecipe, { loading: deleteLoading }] = useDeleteRecipeMutation();
+  const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
 
   const handleSubmit = async (formData: RecipeFormData) => {
     try {
@@ -64,6 +74,44 @@ export function EditRecipeDialog({
     }
   };
 
+  const handleDelete = async () => {
+    try {
+      await deleteRecipe({
+        variables: {
+          id: recipe.id,
+        },
+        update: (cache) => {
+          cache.modify({
+            fields: {
+              recipesByUserId(existingRecipes = [], { readField }) {
+                return existingRecipes.filter(
+                  (recipeRef: any) => recipe.id !== readField('id', recipeRef),
+                );
+              },
+            },
+          });
+        },
+      });
+
+      toast({
+        title: 'レシピを削除しました',
+        status: 'success',
+        duration: 3000,
+        isClosable: true,
+      });
+      setIsDeleteDialogOpen(false);
+      onClose();
+    } catch (error) {
+      toast({
+        title: 'エラーが発生しました',
+        description: '削除に失敗しました',
+        status: 'error',
+        duration: 3000,
+        isClosable: true,
+      });
+    }
+  };
+
   const initialData: RecipeFormData = {
     name: recipe.name,
     description: recipe.description || '',
@@ -76,20 +124,41 @@ export function EditRecipeDialog({
   };
 
   return (
-    <Modal isOpen={isOpen} onClose={onClose} size="xl">
-      <ModalOverlay />
-      <ModalContent maxW="800px">
-        <ModalHeader>レシピの編集</ModalHeader>
-        <ModalCloseButton />
-        <ModalBody pb={6}>
-          <RecipeForm
-            initialData={initialData}
-            onSubmit={handleSubmit}
-            isLoading={loading}
-            submitButtonText="更新"
-          />
-        </ModalBody>
-      </ModalContent>
-    </Modal>
+    <>
+      <Modal isOpen={isOpen} onClose={onClose} size="xl">
+        <ModalOverlay />
+        <ModalContent maxW="800px">
+          <ModalHeader>レシピの編集</ModalHeader>
+          <ModalCloseButton />
+          <ModalBody pb={6}>
+            <RecipeForm
+              initialData={initialData}
+              onSubmit={handleSubmit}
+              isLoading={loading}
+              submitButtonText="更新"
+            />
+          </ModalBody>
+          <ModalFooter>
+            <ButtonGroup>
+              <Button
+                colorScheme="red"
+                onClick={() => setIsDeleteDialogOpen(true)}
+                isLoading={deleteLoading}
+              >
+                削除
+              </Button>
+            </ButtonGroup>
+          </ModalFooter>
+        </ModalContent>
+      </Modal>
+
+      <DeleteRecipeDialog
+        isOpen={isDeleteDialogOpen}
+        onClose={() => setIsDeleteDialogOpen(false)}
+        onDelete={handleDelete}
+        recipeName={recipe.name}
+        isLoading={deleteLoading}
+      />
+    </>
   );
 }
