@@ -74,6 +74,7 @@ export const typeDefs = gql`
     users: [User!]!
     recipe(id: Int!): Recipe
     recipes: [Recipe!]!
+    recipesByUserId(userId: String!): [Recipe!]!
     searchIngredients(searchTerm: String!): [Ingredient!]!
   }
 

@@ -76,6 +76,7 @@ export type Query = {
   __typename?: 'Query';
   recipe?: Maybe<Recipe>;
   recipes: Array<Recipe>;
+  recipesByUserId: Array<Recipe>;
   searchIngredients: Array<Ingredient>;
   user?: Maybe<User>;
   users: Array<User>;
@@ -84,6 +85,11 @@ export type Query = {
 
 export type QueryRecipeArgs = {
   id: Scalars['Int']['input'];
+};
+
+
+export type QueryRecipesByUserIdArgs = {
+  userId: Scalars['String']['input'];
 };
 
 
@@ -147,6 +153,13 @@ export type GetRecipesQueryVariables = Exact<{ [key: string]: never; }>;
 
 
 export type GetRecipesQuery = { __typename?: 'Query', recipes: Array<{ __typename?: 'Recipe', id: number, name: string, description?: string | null }> };
+
+export type GetUserRecipesQueryVariables = Exact<{
+  userId: Scalars['String']['input'];
+}>;
+
+
+export type GetUserRecipesQuery = { __typename?: 'Query', recipesByUserId: Array<{ __typename?: 'Recipe', id: number, name: string, description?: string | null, createdBy: { __typename?: 'User', username: string }, recipeIngredients: Array<{ __typename?: 'RecipeIngredient', quantity: number, ingredient: { __typename?: 'Ingredient', name: string, unit?: { __typename?: 'Unit', unit: string } | null } }> }> };
 
 export type SearchIngredientsQueryVariables = Exact<{
   searchTerm: Scalars['String']['input'];
@@ -283,6 +296,60 @@ export type GetRecipesQueryHookResult = ReturnType<typeof useGetRecipesQuery>;
 export type GetRecipesLazyQueryHookResult = ReturnType<typeof useGetRecipesLazyQuery>;
 export type GetRecipesSuspenseQueryHookResult = ReturnType<typeof useGetRecipesSuspenseQuery>;
 export type GetRecipesQueryResult = Apollo.QueryResult<GetRecipesQuery, GetRecipesQueryVariables>;
+export const GetUserRecipesDocument = gql`
+    query GetUserRecipes($userId: String!) {
+  recipesByUserId(userId: $userId) {
+    id
+    name
+    description
+    createdBy {
+      username
+    }
+    recipeIngredients {
+      quantity
+      ingredient {
+        name
+        unit {
+          unit
+        }
+      }
+    }
+  }
+}
+    `;
+
+/**
+ * __useGetUserRecipesQuery__
+ *
+ * To run a query within a React component, call `useGetUserRecipesQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetUserRecipesQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetUserRecipesQuery({
+ *   variables: {
+ *      userId: // value for 'userId'
+ *   },
+ * });
+ */
+export function useGetUserRecipesQuery(baseOptions: Apollo.QueryHookOptions<GetUserRecipesQuery, GetUserRecipesQueryVariables> & ({ variables: GetUserRecipesQueryVariables; skip?: boolean; } | { skip: boolean; }) ) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetUserRecipesQuery, GetUserRecipesQueryVariables>(GetUserRecipesDocument, options);
+      }
+export function useGetUserRecipesLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetUserRecipesQuery, GetUserRecipesQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetUserRecipesQuery, GetUserRecipesQueryVariables>(GetUserRecipesDocument, options);
+        }
+export function useGetUserRecipesSuspenseQuery(baseOptions?: Apollo.SkipToken | Apollo.SuspenseQueryHookOptions<GetUserRecipesQuery, GetUserRecipesQueryVariables>) {
+          const options = baseOptions === Apollo.skipToken ? baseOptions : {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<GetUserRecipesQuery, GetUserRecipesQueryVariables>(GetUserRecipesDocument, options);
+        }
+export type GetUserRecipesQueryHookResult = ReturnType<typeof useGetUserRecipesQuery>;
+export type GetUserRecipesLazyQueryHookResult = ReturnType<typeof useGetUserRecipesLazyQuery>;
+export type GetUserRecipesSuspenseQueryHookResult = ReturnType<typeof useGetUserRecipesSuspenseQuery>;
+export type GetUserRecipesQueryResult = Apollo.QueryResult<GetUserRecipesQuery, GetUserRecipesQueryVariables>;
 export const SearchIngredientsDocument = gql`
     query SearchIngredients($searchTerm: String!) {
   searchIngredients(searchTerm: $searchTerm) {
