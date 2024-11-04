@@ -24,8 +24,8 @@ export const Query = {
       include: { user: true },
     });
   },
-   // 全てのレシピを取得するためのリゾルバ
-   recipes: async () => {
+  // 全てのレシピを取得するためのリゾルバ
+  recipes: async () => {
     return prisma.recipe.findMany({
       include: {
         user: true,
@@ -33,11 +33,32 @@ export const Query = {
           include: {
             ingredient: {
               include: {
-                unit: true
-              }
-            }
-          }
-        }
+                unit: true,
+              },
+            },
+          },
+        },
+      },
+    });
+  },
+
+  // ユーザーIDに基づいてレシピを取得する新しいリゾルバー
+  recipesByUserId: async (_: unknown, { userId }: { userId: string }) => {
+    return prisma.recipe.findMany({
+      where: {
+        userId: userId,
+      },
+      include: {
+        user: true,
+        recipeIngredients: {
+          include: {
+            ingredient: {
+              include: {
+                unit: true,
+              },
+            },
+          },
+        },
       },
     });
   },
