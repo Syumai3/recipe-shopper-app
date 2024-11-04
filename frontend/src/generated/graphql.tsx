@@ -86,12 +86,19 @@ export type MutationUpdateRecipeArgs = {
 
 export type Query = {
   __typename?: 'Query';
+  myShoppingList: Array<ShoppingListItem>;
   recipe?: Maybe<Recipe>;
   recipes: Array<Recipe>;
   recipesByUserId: Array<Recipe>;
   searchIngredients: Array<Ingredient>;
   user?: Maybe<User>;
   users: Array<User>;
+};
+
+
+export type QueryMyShoppingListArgs = {
+  recipeIds: Array<Scalars['Int']['input']>;
+  servings: Array<Scalars['Int']['input']>;
 };
 
 
@@ -128,6 +135,12 @@ export type RecipeIngredient = {
   __typename?: 'RecipeIngredient';
   ingredient: Ingredient;
   quantity: Scalars['Float']['output'];
+};
+
+export type ShoppingListItem = {
+  __typename?: 'ShoppingListItem';
+  ingredient: Ingredient;
+  totalQuantity: Scalars['Float']['output'];
 };
 
 export type Unit = {
@@ -193,6 +206,14 @@ export type GetUserRecipesQueryVariables = Exact<{
 
 
 export type GetUserRecipesQuery = { __typename?: 'Query', recipesByUserId: Array<{ __typename?: 'Recipe', id: number, name: string, description?: string | null, createdBy: { __typename?: 'User', username: string }, recipeIngredients: Array<{ __typename?: 'RecipeIngredient', quantity: number, ingredient: { __typename?: 'Ingredient', id: number, name: string, unit?: { __typename?: 'Unit', unit: string } | null } }> }> };
+
+export type MyShoppingListQueryVariables = Exact<{
+  recipeIds: Array<Scalars['Int']['input']> | Scalars['Int']['input'];
+  servings: Array<Scalars['Int']['input']> | Scalars['Int']['input'];
+}>;
+
+
+export type MyShoppingListQuery = { __typename?: 'Query', myShoppingList: Array<{ __typename?: 'ShoppingListItem', totalQuantity: number, ingredient: { __typename?: 'Ingredient', id: number, name: string, unit?: { __typename?: 'Unit', unit: string } | null } }> };
 
 export type SearchIngredientsQueryVariables = Exact<{
   searchTerm: Scalars['String']['input'];
@@ -474,6 +495,54 @@ export type GetUserRecipesQueryHookResult = ReturnType<typeof useGetUserRecipesQ
 export type GetUserRecipesLazyQueryHookResult = ReturnType<typeof useGetUserRecipesLazyQuery>;
 export type GetUserRecipesSuspenseQueryHookResult = ReturnType<typeof useGetUserRecipesSuspenseQuery>;
 export type GetUserRecipesQueryResult = Apollo.QueryResult<GetUserRecipesQuery, GetUserRecipesQueryVariables>;
+export const MyShoppingListDocument = gql`
+    query MyShoppingList($recipeIds: [Int!]!, $servings: [Int!]!) {
+  myShoppingList(recipeIds: $recipeIds, servings: $servings) {
+    ingredient {
+      id
+      name
+      unit {
+        unit
+      }
+    }
+    totalQuantity
+  }
+}
+    `;
+
+/**
+ * __useMyShoppingListQuery__
+ *
+ * To run a query within a React component, call `useMyShoppingListQuery` and pass it any options that fit your needs.
+ * When your component renders, `useMyShoppingListQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useMyShoppingListQuery({
+ *   variables: {
+ *      recipeIds: // value for 'recipeIds'
+ *      servings: // value for 'servings'
+ *   },
+ * });
+ */
+export function useMyShoppingListQuery(baseOptions: Apollo.QueryHookOptions<MyShoppingListQuery, MyShoppingListQueryVariables> & ({ variables: MyShoppingListQueryVariables; skip?: boolean; } | { skip: boolean; }) ) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<MyShoppingListQuery, MyShoppingListQueryVariables>(MyShoppingListDocument, options);
+      }
+export function useMyShoppingListLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<MyShoppingListQuery, MyShoppingListQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<MyShoppingListQuery, MyShoppingListQueryVariables>(MyShoppingListDocument, options);
+        }
+export function useMyShoppingListSuspenseQuery(baseOptions?: Apollo.SkipToken | Apollo.SuspenseQueryHookOptions<MyShoppingListQuery, MyShoppingListQueryVariables>) {
+          const options = baseOptions === Apollo.skipToken ? baseOptions : {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<MyShoppingListQuery, MyShoppingListQueryVariables>(MyShoppingListDocument, options);
+        }
+export type MyShoppingListQueryHookResult = ReturnType<typeof useMyShoppingListQuery>;
+export type MyShoppingListLazyQueryHookResult = ReturnType<typeof useMyShoppingListLazyQuery>;
+export type MyShoppingListSuspenseQueryHookResult = ReturnType<typeof useMyShoppingListSuspenseQuery>;
+export type MyShoppingListQueryResult = Apollo.QueryResult<MyShoppingListQuery, MyShoppingListQueryVariables>;
 export const SearchIngredientsDocument = gql`
     query SearchIngredients($searchTerm: String!) {
   searchIngredients(searchTerm: $searchTerm) {
