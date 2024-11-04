@@ -1,3 +1,3 @@
 export default function HomePage() {
-	return <div>Topページ</div>;
+  return <div>レシピを作って買い物リストを作れます</div>;
 }
