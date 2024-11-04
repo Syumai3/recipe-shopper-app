@@ -48,6 +48,9 @@ export const Query = {
       where: {
         userId: userId,
       },
+      orderBy: {
+        createdAt: 'desc',
+      },
       include: {
         user: true,
         recipeIngredients: {

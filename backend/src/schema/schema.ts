@@ -69,6 +69,13 @@ export const typeDefs = gql`
     unit: String!
   }
 
+  input UpdateRecipeInput {
+    id: Int!
+    name: String!
+    description: String
+    ingredients: [IngredientInput!]!
+  }
+
   type Query {
     user(id: String!): User
     users: [User!]!
@@ -81,5 +88,6 @@ export const typeDefs = gql`
   type Mutation {
     createUser(input: CreateUserInput!): User!
     createRecipe(input: CreateRecipeInput!): Recipe!
+    updateRecipe(input: UpdateRecipeInput!): Recipe!
   }
 `;

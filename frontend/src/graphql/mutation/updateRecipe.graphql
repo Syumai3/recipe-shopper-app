@@ -1,11 +1,9 @@
-query GetUserRecipes($userId: String!) {
-  recipesByUserId(userId: $userId) {
+# src/graphql/mutations/updateRecipe.graphql
+mutation UpdateRecipe($input: UpdateRecipeInput!) {
+  updateRecipe(input: $input) {
     id
     name
     description
-    createdBy {
-      username
-    }
     recipeIngredients {
       quantity
       ingredient {
