@@ -18,17 +18,17 @@ export default function Sidebar() {
           color="gray.600"
           _hover={{ textDecoration: 'none', color: 'gray.400' }}
         >
-          [アプリ名]
+          Recipee
         </ChakraLink>
       </Box>
       <VStack align="start" spacing={4}>
         <ChakraLink
-          href="./menu"
+          href="./shoppingList"
           fontSize="lg"
           color="gray.600"
           _hover={{ textDecoration: 'none', color: 'gray.400' }}
         >
-          献立
+          買い物リストを作成する
         </ChakraLink>
         <ChakraLink
           href="./createRecipe"
