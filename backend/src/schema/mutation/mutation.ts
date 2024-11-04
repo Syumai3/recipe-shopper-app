@@ -75,4 +75,81 @@ export const Mutation = {
       },
     });
   },
+
+  // レシピを更新するためのリゾルバ
+  updateRecipe: async (
+    _: unknown,
+    {
+      input,
+    }: {
+      input: {
+        id: number;
+        name: string;
+        description?: string;
+        ingredients: Array<{
+          ingredientId: number;
+          quantity: number;
+        }>;
+      };
+    },
+  ) => {
+    try {
+      // トランザクションを使用して、レシピと材料を一緒に更新
+      return await prisma.$transaction(async (tx) => {
+        // 既存のレシピを更新
+        const updatedRecipe = await tx.recipe.update({
+          where: { id: input.id },
+          data: {
+            name: input.name,
+            description: input.description,
+            // 一旦既存の材料関連をすべて削除
+            recipeIngredients: {
+              deleteMany: {},
+            },
+          },
+          include: {
+            user: true,
+            recipeIngredients: {
+              include: {
+                ingredient: {
+                  include: {
+                    unit: true,
+                  },
+                },
+              },
+            },
+          },
+        });
+
+        // 新しい材料関連を作成
+        await tx.recipeIngredient.createMany({
+          data: input.ingredients.map((ing) => ({
+            recipeId: updatedRecipe.id,
+            ingredientId: ing.ingredientId,
+            quantity: ing.quantity,
+          })),
+        });
+
+        // 更新後のレシピを取得して返す
+        return await tx.recipe.findUnique({
+          where: { id: input.id },
+          include: {
+            user: true,
+            recipeIngredients: {
+              include: {
+                ingredient: {
+                  include: {
+                    unit: true,
+                  },
+                },
+              },
+            },
+          },
+        });
+      });
+    } catch (error) {
+      console.error('Recipe update error:', error);
+      throw new Error('レシピの更新に失敗しました');
+    }
+  },
 };
