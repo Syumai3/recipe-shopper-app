@@ -10,13 +10,15 @@ export type MyContext = {
   prisma: PrismaClient;
 };
 
-const server = new ApolloServer({
+const server = new ApolloServer<MyContext>({
   typeDefs,
   resolvers,
 });
 
-const { url } = await startStandaloneServer(server, {
-  listen: { port: 4001 },
+const { url } = await startStandaloneServer<MyContext>(server, {
+  listen: {
+    port: parseInt(process.env.PORT || '4001'),
+  },
   context: async (): Promise<MyContext> => {
     return {
       prisma,
