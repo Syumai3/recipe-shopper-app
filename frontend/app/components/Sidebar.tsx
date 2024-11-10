@@ -4,8 +4,7 @@ import React from 'react';
 export default function Sidebar() {
   return (
     <Box
-      w={{ base: '200px', md: '300px' }}
-      maxW="30%"
+      w="200px" // 固定幅に変更
       bgColor="orange.50"
       borderRadius={10}
       height="100%"
@@ -14,8 +13,9 @@ export default function Sidebar() {
       <Box h="60px" display="flex" alignItems="center" mb={4}>
         <ChakraLink
           href="./"
-          fontSize="lg"
           color="gray.600"
+          fontSize="xl" // 文字サイズを大きく
+          fontWeight="bold" // 太字に変更
           _hover={{ textDecoration: 'none', color: 'gray.400' }}
         >
           Recipee
