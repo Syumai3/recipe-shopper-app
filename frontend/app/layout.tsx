@@ -1,4 +1,5 @@
-import { Box, Flex, HStack, VStack } from '@chakra-ui/react';
+// app/layout.tsx
+import { Box, Flex } from '@chakra-ui/react';
 import type { Metadata } from 'next';
 import { Inter } from 'next/font/google';
 import ApolloChakraProvider from './ApolloChakraProvider';
@@ -6,6 +7,7 @@ import Sidebar from './components/Sidebar';
 import { SessionProvider } from 'next-auth/react';
 import Header from './components/header';
 import NextAuthProvider from '@/src/providers/NextAuth';
+import { MobileMenu } from './components/layout/MobileMenu';
 
 const inter = Inter({ subsets: ['latin'] });
 
@@ -30,35 +32,46 @@ export default function RootLayout({
                 w="100%"
                 bgColor="orange.100"
                 alignItems="stretch"
-                p={4}
+                gap={4} // コンポーネント間の間隔を設定
+                p={{ base: 2, md: 4 }}
               >
-                <Sidebar />
+                {/* サイドバー - モバイルでは非表示 */}
+                <Box
+                  display={{ base: 'none', md: 'block' }}
+                  flexShrink={0} // サイドバーのサイズを固定
+                >
+                  <Sidebar />
+                </Box>
+
+                {/* メインコンテンツエリア */}
                 <Flex
                   flexDirection="column"
-                  flexGrow={1}
-                  p={4}
-                  overflowY="auto"
+                  flex={1} // flexGrow を flex に変更
+                  gap={4} // 内部の要素間の間隔を設定
+                  minW={0} // オーバーフローを防ぐ
                 >
+                  {/* ヘッダー */}
                   <Box
-                    h="60px"
-                    w="100%"
+                    h={{ base: '50px', md: '60px' }}
                     bgColor="orange.50"
                     borderRadius={10}
-                    mb={4}
                     display="flex"
                     alignItems="center"
-                    padding={4}
-                    justifyContent="flex-end"
+                    px={4} // paddingを左右のみに
+                    justifyContent="space-between"
                   >
+                    <MobileMenu />
                     <Header />
                   </Box>
+
+                  {/* コンテンツ */}
                   <Box
-                    flexGrow={1}
-                    w="100%"
+                    flex={1} // flexGrow を flex に変更
                     bgColor="orange.50"
                     borderRadius={10}
                     p={4}
                     overflowY="auto"
+                    minH={0} // スクロールを適切に機能させる
                   >
                     {children}
                   </Box>

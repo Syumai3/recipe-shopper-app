@@ -67,7 +67,7 @@ function CreateRecipe() {
   }
 
   return (
-    <Box w="600px" m={5}>
+    <Box w={{ base: '100%', md: '600px' }} m={5}>
       <RecipeForm
         onSubmit={handleSubmit}
         isLoading={loading}

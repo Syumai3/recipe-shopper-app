@@ -145,7 +145,7 @@ export function RecipeForm({
   };
 
   return (
-    <Stack spacing={3} w="100%">
+    <Stack spacing={3} w="100%" maxW={{ base: '100%', md: '600px' }} mx="auto">
       <FormControl>
         <FormLabel htmlFor="recipe-name">レシピ名</FormLabel>
         <Input
@@ -169,7 +169,7 @@ export function RecipeForm({
         >
           {ingredients.map((ingredient, index) => (
             <Box position="relative" key={index}>
-              <HStack>
+              <Stack direction={{ base: 'column', md: 'row' }} spacing={2}>
                 <Input
                   placeholder="材料名"
                   value={ingredient.name}
@@ -192,7 +192,7 @@ export function RecipeForm({
                   onClick={() => removeIngredient(index)}
                   size="sm"
                 />
-              </HStack>
+              </Stack>
               {/* 材料の検索結果を表示する */}
               {selectedIngredientIndex === index &&
                 searchData?.searchIngredients && (
@@ -203,7 +203,7 @@ export function RecipeForm({
                     bg="white"
                     borderWidth={1}
                     borderRadius="md"
-                    width="50%"
+                    width="100%"
                     maxH="200px"
                     overflowY="auto"
                   >
