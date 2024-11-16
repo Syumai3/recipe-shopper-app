@@ -134,7 +134,7 @@ erDiagram
 - バックエンド:
   - Apollo Server
 - データベース:
-  - Postgresql sql
+  - PostgreSQL
   - prisma
 - 認証:
   - Auth.js
