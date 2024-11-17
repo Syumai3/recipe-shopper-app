@@ -1,11 +1,9 @@
-// components/RecipeForm.tsx
 'use client';
 import {
   Box,
   Button,
   FormControl,
   FormLabel,
-  HStack,
   IconButton,
   Input,
   List,
@@ -14,9 +12,9 @@ import {
   VStack,
 } from '@chakra-ui/react';
 import { AddIcon, DeleteIcon } from '@chakra-ui/icons';
-import React, { useEffect, useRef, useState } from 'react';
-import { useSearchIngredientsLazyQuery } from '@/src/generated/graphql';
-import { useDebounceCallback } from '@react-hook/debounce';
+import { useIngredientSearch } from '@/hooks/useIngredientSearch';
+import { useIngredients } from '@/hooks/useIngredients';
+import { useRecipeForm } from '@/hooks/useRecipeForm';
 
 type Ingredient = {
   id?: number;
@@ -44,104 +42,34 @@ export function RecipeForm({
   submitButtonText = '登録',
   isLoading = false,
 }: RecipeFormProps) {
-  const [recipeName, setRecipeName] = useState(initialData?.name ?? '');
-  const [ingredients, setIngredients] = useState<Ingredient[]>(
-    initialData?.ingredients ?? [
-      { id: undefined, name: '', quantity: 0, unit: '' },
-    ],
-  );
-  const [description, setDescription] = useState(
-    initialData?.description ?? '',
-  );
-  // 材料を検索するクエリ
-  const [searchIngredients, { data: searchData }] =
-    useSearchIngredientsLazyQuery();
-  // 選択された材料のインデックスを保持する
-  const [selectedIngredientIndex, setSelectedIngredientIndex] = useState<
-    number | null
-  >(null);
-  const listRef = useRef<HTMLUListElement | null>(null);
+  const {
+    recipeName,
+    setRecipeName,
+    description,
+    setDescription,
+    handleSubmit,
+  } = useRecipeForm(initialData);
 
-  // 検索した結果、0.5秒間何も入力がなければ検索を実行する
-  const debouncedSearch = useDebounceCallback((searchTerm: string) => {
-    if (searchTerm.length > 0) {
-      searchIngredients({ variables: { searchTerm } });
-    }
-  }, 500);
+  const {
+    ingredients,
+    addIngredient,
+    removeIngredient,
+    updateIngredient,
+    handleIngredientSelect,
+  } = useIngredients(initialData?.ingredients);
 
-  // 材料を追加する関数
-  const addIngredient = () => {
-    setIngredients([...ingredients, { name: '', quantity: 0, unit: '' }]);
-  };
-  // 材料を削除する関数
-  const removeIngredient = (index: number) => {
-    if (ingredients.length === 1) return;
-    setIngredients(ingredients.filter((_, i) => i !== index));
-  };
-  // 材料を更新する関数
-  const updateIngredient = (
-    index: number,
-    field: keyof Ingredient,
-    value: string | number,
-  ) => {
-    const newIngredients = ingredients.map((ingredient, i) => {
-      if (i === index) {
-        return {
-          ...ingredient,
-          [field]:
-            field === 'quantity' ? parseFloat(value.toString()) || 0 : value,
-        };
-      }
-      return ingredient;
-    });
-    setIngredients(newIngredients);
-  };
+  const {
+    searchData,
+    selectedIngredientIndex,
+    setSelectedIngredientIndex,
+    listRef,
+    debouncedSearch,
+  } = useIngredientSearch();
 
-  // 材料を検索する関数
   const handleIngredientSearch = (index: number, term: string) => {
-    // 材料を更新する
     updateIngredient(index, 'name', term);
-    // アクティブな材料のインデックスを更新する
     setSelectedIngredientIndex(index);
-    // 検索関数を呼び出す
     debouncedSearch(term);
-  };
-
-  // 検索候補の中の材料を選択する関数
-  const handleIngredientSelect = (index: number, selectedIngredient: any) => {
-    // 新しい材料のリストを作成して操作する
-    const newIngredients = [...ingredients];
-    // 選択された材料の中のオブジェクトを更新する
-    newIngredients[index] = {
-      ...newIngredients[index],
-      id: selectedIngredient.id,
-      name: selectedIngredient.name,
-      unit: selectedIngredient.unit.unit,
-    };
-    setIngredients(newIngredients);
-    setSelectedIngredientIndex(null);
-  };
-
-  useEffect(() => {
-    const handleClickOutside = (event: MouseEvent) => {
-      if (listRef.current && !listRef.current.contains(event.target as Node)) {
-        setSelectedIngredientIndex(null);
-      }
-    };
-
-    document.addEventListener('mousedown', handleClickOutside);
-    return () => {
-      document.removeEventListener('mousedown', handleClickOutside);
-    };
-  }, []);
-
-  // レシピを登録する関数
-  const handleSubmit = async () => {
-    await onSubmit({
-      name: recipeName,
-      description,
-      ingredients,
-    });
   };
 
   return (
@@ -161,7 +89,8 @@ export function RecipeForm({
         <FormLabel>材料</FormLabel>
         <VStack
           align="stretch"
-          maxH="200px"
+          minH={{ base: '200px', md: '300px' }}
+          maxH={{ base: '300px', md: '400px' }}
           overflowY="auto"
           borderWidth={1}
           borderRadius="md"
@@ -193,7 +122,6 @@ export function RecipeForm({
                   size="sm"
                 />
               </Stack>
-              {/* 材料の検索結果を表示する */}
               {selectedIngredientIndex === index &&
                 searchData?.searchIngredients && (
                   <List
@@ -243,7 +171,7 @@ export function RecipeForm({
         <Button
           colorScheme="orange"
           w="100px"
-          onClick={handleSubmit}
+          onClick={() => handleSubmit(onSubmit, ingredients)}
           isLoading={isLoading}
         >
           {submitButtonText}

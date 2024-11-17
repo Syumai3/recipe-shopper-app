@@ -1,4 +1,4 @@
-// 画像アップロード機能は後回しの方針に変更
+// 画像アップロード機能は未実装
 import type { InputHTMLAttributes } from 'react';
 
 export type ImageInputProps = {

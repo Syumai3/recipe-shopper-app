@@ -8,12 +8,14 @@ import {
   Heading,
   Text,
   Stack,
+  Center,
+  Spinner,
 } from '@chakra-ui/react';
 import { useGetUserRecipesQuery } from '@/src/generated/graphql';
 import RecipeCard from './RecipeCard';
 
 function Recipes() {
-  const { data: session } = useSession();
+  const { data: session, status } = useSession();
   const { data, loading, error } = useGetUserRecipesQuery({
     variables: {
       userId: session?.user?.id ?? '',
@@ -21,7 +23,37 @@ function Recipes() {
     skip: !session?.user?.id,
   });
 
-  // ローディング状態
+  if (status === 'unauthenticated') {
+    return (
+      <Box
+        p={5}
+        display="flex"
+        flexDirection="column"
+        alignItems="center"
+        justifyContent="center"
+        minH="200px"
+        textAlign="center"
+      >
+        <Heading size="md" mb={4} color="gray.600">
+          レシピを確認するにはログインが必要です
+        </Heading>
+      </Box>
+    );
+  }
+
+  if (status === 'loading') {
+    return (
+      <Center h="200px">
+        <Spinner
+          thickness="4px"
+          speed="0.65s"
+          emptyColor="gray.200"
+          color="orange.500"
+          size="xl"
+        />
+      </Center>
+    );
+  }
   if (loading) {
     return (
       <Stack spacing={3} w="100%" maxW="1200px" mx="auto" p={5}>
@@ -34,7 +66,6 @@ function Recipes() {
     );
   }
 
-  // データが空の場合
   if (!data?.recipesByUserId?.length) {
     return (
       <Box p={5}>
@@ -43,7 +74,6 @@ function Recipes() {
     );
   }
 
-  // レシピ一覧の表示
   return (
     <Stack spacing={3} w="100%" maxW="1200px" mx="auto" p={5}>
       <Box mb={6}>

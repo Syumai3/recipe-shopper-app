@@ -14,6 +14,8 @@ import {
   Button,
   Checkbox,
   Divider,
+  Center,
+  Spinner,
 } from '@chakra-ui/react';
 import {
   useGetUserRecipesQuery,
@@ -22,7 +24,7 @@ import {
 import { useSession } from 'next-auth/react';
 
 export default function ShoppingList() {
-  const { data: session } = useSession();
+  const { data: session, status } = useSession();
   const { data: recipesData } = useGetUserRecipesQuery({
     variables: {
       userId: session?.user?.id ?? '',
@@ -34,7 +36,6 @@ export default function ShoppingList() {
     new Map(),
   );
 
-  // 選択したレシピとその人数から買い物リストを取得
   const { data: shoppingListData } = useMyShoppingListQuery({
     variables: {
       recipeIds: Array.from(selectedRecipes.keys()),
@@ -58,6 +59,38 @@ export default function ShoppingList() {
     newSelected.set(recipeId, value);
     setSelectedRecipes(newSelected);
   };
+
+  if (status === 'unauthenticated') {
+    return (
+      <Box
+        p={5}
+        display="flex"
+        flexDirection="column"
+        alignItems="center"
+        justifyContent="center"
+        minH="200px"
+        textAlign="center"
+      >
+        <Heading size="md" mb={4} color="gray.600">
+          買い物リストを作成するにはログインが必要です
+        </Heading>
+      </Box>
+    );
+  }
+
+  if (status === 'loading') {
+    return (
+      <Center h="200px">
+        <Spinner
+          thickness="4px"
+          speed="0.65s"
+          emptyColor="gray.200"
+          color="orange.500"
+          size="xl"
+        />
+      </Center>
+    );
+  }
 
   return (
     <Box p={5}>

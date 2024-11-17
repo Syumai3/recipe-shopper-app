@@ -1,7 +1,13 @@
-// pages/CreateRecipe.tsx
 'use client';
 import { useSession } from 'next-auth/react';
-import { Box, useToast } from '@chakra-ui/react';
+import {
+  Box,
+  Heading,
+  useToast,
+  Text,
+  Center,
+  Spinner,
+} from '@chakra-ui/react';
 import { useCreateRecipeMutation } from '@/src/generated/graphql';
 import { RecipeForm, RecipeFormData } from '../components/RecipeForm';
 
@@ -55,14 +61,35 @@ function CreateRecipe() {
     }
   };
 
-  // 非ログイン時とローディング時の表示は同じ
   if (status === 'unauthenticated') {
     return (
-      <Box p={10}>
-        <Box fontSize="lg" mb={4}>
+      <Box
+        p={5}
+        display="flex"
+        flexDirection="column"
+        alignItems="center"
+        justifyContent="center"
+        minH="200px"
+        textAlign="center"
+      >
+        <Heading size="md" mb={4} color="gray.600">
           レシピを作成するにはログインが必要です
-        </Box>
+        </Heading>
       </Box>
+    );
+  }
+
+  if (status === 'loading') {
+    return (
+      <Center h="200px">
+        <Spinner
+          thickness="4px"
+          speed="0.65s"
+          emptyColor="gray.200"
+          color="orange.500"
+          size="xl"
+        />
+      </Center>
     );
   }
 

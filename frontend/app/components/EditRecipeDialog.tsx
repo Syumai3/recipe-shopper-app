@@ -1,4 +1,3 @@
-// components/EditRecipeDialog.tsx
 import {
   Modal,
   ModalOverlay,
