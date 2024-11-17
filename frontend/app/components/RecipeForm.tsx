@@ -14,9 +14,8 @@ import {
   VStack,
 } from '@chakra-ui/react';
 import { AddIcon, DeleteIcon } from '@chakra-ui/icons';
-import React, { useEffect, useRef, useState } from 'react';
-import { useSearchIngredientsLazyQuery } from '@/src/generated/graphql';
-import { useDebounceCallback } from '@react-hook/debounce';
+import React, { useState } from 'react';
+import { useIngredientSearch } from '@/hooks/useIngredientSearch';
 
 type Ingredient = {
   id?: number;
@@ -53,21 +52,15 @@ export function RecipeForm({
   const [description, setDescription] = useState(
     initialData?.description ?? '',
   );
-  // 材料を検索するクエリ
-  const [searchIngredients, { data: searchData }] =
-    useSearchIngredientsLazyQuery();
-  // 選択された材料のインデックスを保持する
-  const [selectedIngredientIndex, setSelectedIngredientIndex] = useState<
-    number | null
-  >(null);
-  const listRef = useRef<HTMLUListElement | null>(null);
 
-  // 検索した結果、0.5秒間何も入力がなければ検索を実行する
-  const debouncedSearch = useDebounceCallback((searchTerm: string) => {
-    if (searchTerm.length > 0) {
-      searchIngredients({ variables: { searchTerm } });
-    }
-  }, 500);
+  // 検索関連の処理をカスタムフックから取得
+  const {
+    searchData,
+    selectedIngredientIndex,
+    setSelectedIngredientIndex,
+    listRef,
+    debouncedSearch,
+  } = useIngredientSearch();
 
   // 材料を追加する関数
   const addIngredient = () => {
@@ -121,19 +114,6 @@ export function RecipeForm({
     setIngredients(newIngredients);
     setSelectedIngredientIndex(null);
   };
-
-  useEffect(() => {
-    const handleClickOutside = (event: MouseEvent) => {
-      if (listRef.current && !listRef.current.contains(event.target as Node)) {
-        setSelectedIngredientIndex(null);
-      }
-    };
-
-    document.addEventListener('mousedown', handleClickOutside);
-    return () => {
-      document.removeEventListener('mousedown', handleClickOutside);
-    };
-  }, []);
 
   // レシピを登録する関数
   const handleSubmit = async () => {
