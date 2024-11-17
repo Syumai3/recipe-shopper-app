@@ -24,7 +24,6 @@ export function SendImageForm() {
     fileInputRef.current.click();
   };
 
-  // ファイルが読み込まれた際に、画像データを抽出する処理
   const generateImageSource = (files: FileList) => {
     const file = files[0];
     const fileReader = new FileReader();
@@ -39,11 +38,10 @@ export function SendImageForm() {
     const files = e.target.files;
     if (!files || files.length <= 0) return;
 
-    generateImageSource(files); // img要素のsrc属性に渡す画像データを生成
+    generateImageSource(files);
     setImageFile(files[0]);
   };
 
-  // キャンセルボタンを押した際の処理
   const handleClickCancelButton = () => {
     setFileName('');
     setImageSource('');

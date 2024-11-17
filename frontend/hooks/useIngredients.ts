@@ -1,4 +1,3 @@
-// hooks/useIngredients.ts
 import { useState } from 'react';
 
 type Ingredient = {

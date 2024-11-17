@@ -1,4 +1,3 @@
-// pages/CreateRecipe.tsx
 'use client';
 import { useSession } from 'next-auth/react';
 import { Box, useToast } from '@chakra-ui/react';
@@ -55,7 +54,6 @@ function CreateRecipe() {
     }
   };
 
-  // 非ログイン時とローディング時の表示は同じ
   if (status === 'unauthenticated') {
     return (
       <Box p={10}>

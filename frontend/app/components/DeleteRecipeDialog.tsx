@@ -1,4 +1,3 @@
-// components/DeleteRecipeDialog.tsx
 import {
   AlertDialog,
   AlertDialogBody,

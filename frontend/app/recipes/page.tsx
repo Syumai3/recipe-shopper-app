@@ -21,7 +21,6 @@ function Recipes() {
     skip: !session?.user?.id,
   });
 
-  // ローディング状態
   if (loading) {
     return (
       <Stack spacing={3} w="100%" maxW="1200px" mx="auto" p={5}>
@@ -34,7 +33,6 @@ function Recipes() {
     );
   }
 
-  // データが空の場合
   if (!data?.recipesByUserId?.length) {
     return (
       <Box p={5}>
@@ -43,7 +41,6 @@ function Recipes() {
     );
   }
 
-  // レシピ一覧の表示
   return (
     <Stack spacing={3} w="100%" maxW="1200px" mx="auto" p={5}>
       <Box mb={6}>

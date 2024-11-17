@@ -1,4 +1,3 @@
-// app/layout.tsx
 import { Box, Flex } from '@chakra-ui/react';
 import type { Metadata } from 'next';
 import { Inter } from 'next/font/google';
@@ -32,46 +31,32 @@ export default function RootLayout({
                 w="100%"
                 bgColor="orange.100"
                 alignItems="stretch"
-                gap={4} // コンポーネント間の間隔を設定
+                gap={4}
                 p={{ base: 2, md: 4 }}
               >
-                {/* サイドバー - モバイルでは非表示 */}
-                <Box
-                  display={{ base: 'none', md: 'block' }}
-                  flexShrink={0} // サイドバーのサイズを固定
-                >
+                <Box display={{ base: 'none', md: 'block' }} flexShrink={0}>
                   <Sidebar />
                 </Box>
-
-                {/* メインコンテンツエリア */}
-                <Flex
-                  flexDirection="column"
-                  flex={1} // flexGrow を flex に変更
-                  gap={4} // 内部の要素間の間隔を設定
-                  minW={0} // オーバーフローを防ぐ
-                >
-                  {/* ヘッダー */}
+                <Flex flexDirection="column" flex={1} gap={4} minW={0}>
                   <Box
                     h={{ base: '50px', md: '60px' }}
                     bgColor="orange.50"
                     borderRadius={10}
                     display="flex"
                     alignItems="center"
-                    px={4} // paddingを左右のみに
+                    px={4}
                     justifyContent="space-between"
                   >
                     <MobileMenu />
                     <Header />
                   </Box>
-
-                  {/* コンテンツ */}
                   <Box
-                    flex={1} // flexGrow を flex に変更
+                    flex={1}
                     bgColor="orange.50"
                     borderRadius={10}
                     p={4}
                     overflowY="auto"
-                    minH={0} // スクロールを適切に機能させる
+                    minH={0}
                   >
                     {children}
                   </Box>

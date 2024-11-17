@@ -8,7 +8,6 @@ export default function Header() {
   const { data: session, status } = useSession();
   const [createUser, { loading, error }] = useCreateUserMutation();
 
-  // 動作確認
   useEffect(() => {
     const handleAuthentication = async () => {
       if (status === 'authenticated' && session?.user?.id) {
@@ -32,7 +31,6 @@ export default function Header() {
   }, [session, status, createUser]);
   return (
     <>
-      {/* ここにロゴや他のヘッダー要素を配置できます */}
       {status === 'authenticated' ? (
         <Flex align="center" height="40px">
           <Button

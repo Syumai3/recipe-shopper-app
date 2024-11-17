@@ -34,7 +34,6 @@ export default function ShoppingList() {
     new Map(),
   );
 
-  // 選択したレシピとその人数から買い物リストを取得
   const { data: shoppingListData } = useMyShoppingListQuery({
     variables: {
       recipeIds: Array.from(selectedRecipes.keys()),

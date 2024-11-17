@@ -1,4 +1,3 @@
-// components/RecipeCard.tsx
 import { useState } from 'react';
 import { Card, CardHeader, CardBody, Heading, Text } from '@chakra-ui/react';
 import { GetUserRecipesQuery } from '@/src/generated/graphql';

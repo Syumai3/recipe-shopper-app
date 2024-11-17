@@ -1,4 +1,3 @@
-// hooks/useIngredientSearch.ts
 import { useSearchIngredientsLazyQuery } from '@/src/generated/graphql';
 import { useDebounceCallback } from '@react-hook/debounce';
 import { useState, useRef, useEffect } from 'react';
