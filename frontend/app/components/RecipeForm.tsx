@@ -1,11 +1,9 @@
-// components/RecipeForm.tsx
 'use client';
 import {
   Box,
   Button,
   FormControl,
   FormLabel,
-  HStack,
   IconButton,
   Input,
   List,
@@ -14,9 +12,9 @@ import {
   VStack,
 } from '@chakra-ui/react';
 import { AddIcon, DeleteIcon } from '@chakra-ui/icons';
-import React, { useState } from 'react';
 import { useIngredientSearch } from '@/hooks/useIngredientSearch';
 import { useIngredients } from '@/hooks/useIngredients';
+import { useRecipeForm } from '@/hooks/useRecipeForm';
 
 type Ingredient = {
   id?: number;
@@ -44,12 +42,14 @@ export function RecipeForm({
   submitButtonText = '登録',
   isLoading = false,
 }: RecipeFormProps) {
-  const [recipeName, setRecipeName] = useState(initialData?.name ?? '');
-  const [description, setDescription] = useState(
-    initialData?.description ?? '',
-  );
+  const {
+    recipeName,
+    setRecipeName,
+    description,
+    setDescription,
+    handleSubmit,
+  } = useRecipeForm(initialData);
 
-  // 材料関連の処理をカスタムフックから取得
   const {
     ingredients,
     addIngredient,
@@ -58,7 +58,6 @@ export function RecipeForm({
     handleIngredientSelect,
   } = useIngredients(initialData?.ingredients);
 
-  // 検索関連の処理をカスタムフックから取得
   const {
     searchData,
     selectedIngredientIndex,
@@ -67,23 +66,10 @@ export function RecipeForm({
     debouncedSearch,
   } = useIngredientSearch();
 
-  // 材料を検索する関数
   const handleIngredientSearch = (index: number, term: string) => {
-    // 材料を更新する
     updateIngredient(index, 'name', term);
-    // アクティブな材料のインデックスを更新する
     setSelectedIngredientIndex(index);
-    // 検索関数を呼び出す
     debouncedSearch(term);
-  };
-
-  // レシピを登録する関数
-  const handleSubmit = async () => {
-    await onSubmit({
-      name: recipeName,
-      description,
-      ingredients,
-    });
   };
 
   return (
@@ -135,7 +121,6 @@ export function RecipeForm({
                   size="sm"
                 />
               </Stack>
-              {/* 材料の検索結果を表示する */}
               {selectedIngredientIndex === index &&
                 searchData?.searchIngredients && (
                   <List
@@ -185,7 +170,7 @@ export function RecipeForm({
         <Button
           colorScheme="orange"
           w="100px"
-          onClick={handleSubmit}
+          onClick={() => handleSubmit(onSubmit, ingredients)}
           isLoading={isLoading}
         >
           {submitButtonText}
