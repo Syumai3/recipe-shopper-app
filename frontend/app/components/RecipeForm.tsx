@@ -16,6 +16,7 @@ import {
 import { AddIcon, DeleteIcon } from '@chakra-ui/icons';
 import React, { useState } from 'react';
 import { useIngredientSearch } from '@/hooks/useIngredientSearch';
+import { useIngredients } from '@/hooks/useIngredients';
 
 type Ingredient = {
   id?: number;
@@ -44,14 +45,18 @@ export function RecipeForm({
   isLoading = false,
 }: RecipeFormProps) {
   const [recipeName, setRecipeName] = useState(initialData?.name ?? '');
-  const [ingredients, setIngredients] = useState<Ingredient[]>(
-    initialData?.ingredients ?? [
-      { id: undefined, name: '', quantity: 0, unit: '' },
-    ],
-  );
   const [description, setDescription] = useState(
     initialData?.description ?? '',
   );
+
+  // 材料関連の処理をカスタムフックから取得
+  const {
+    ingredients,
+    addIngredient,
+    removeIngredient,
+    updateIngredient,
+    handleIngredientSelect,
+  } = useIngredients(initialData?.ingredients);
 
   // 検索関連の処理をカスタムフックから取得
   const {
@@ -62,34 +67,6 @@ export function RecipeForm({
     debouncedSearch,
   } = useIngredientSearch();
 
-  // 材料を追加する関数
-  const addIngredient = () => {
-    setIngredients([...ingredients, { name: '', quantity: 0, unit: '' }]);
-  };
-  // 材料を削除する関数
-  const removeIngredient = (index: number) => {
-    if (ingredients.length === 1) return;
-    setIngredients(ingredients.filter((_, i) => i !== index));
-  };
-  // 材料を更新する関数
-  const updateIngredient = (
-    index: number,
-    field: keyof Ingredient,
-    value: string | number,
-  ) => {
-    const newIngredients = ingredients.map((ingredient, i) => {
-      if (i === index) {
-        return {
-          ...ingredient,
-          [field]:
-            field === 'quantity' ? parseFloat(value.toString()) || 0 : value,
-        };
-      }
-      return ingredient;
-    });
-    setIngredients(newIngredients);
-  };
-
   // 材料を検索する関数
   const handleIngredientSearch = (index: number, term: string) => {
     // 材料を更新する
@@ -98,21 +75,6 @@ export function RecipeForm({
     setSelectedIngredientIndex(index);
     // 検索関数を呼び出す
     debouncedSearch(term);
-  };
-
-  // 検索候補の中の材料を選択する関数
-  const handleIngredientSelect = (index: number, selectedIngredient: any) => {
-    // 新しい材料のリストを作成して操作する
-    const newIngredients = [...ingredients];
-    // 選択された材料の中のオブジェクトを更新する
-    newIngredients[index] = {
-      ...newIngredients[index],
-      id: selectedIngredient.id,
-      name: selectedIngredient.name,
-      unit: selectedIngredient.unit.unit,
-    };
-    setIngredients(newIngredients);
-    setSelectedIngredientIndex(null);
   };
 
   // レシピを登録する関数
