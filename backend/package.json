@@ -15,7 +15,8 @@
     "db:connect": "docker exec -it backend-db-1 psql -U myuser -d recipe_shopper",
     "prisma:migrate": "npx prisma migrate dev --name init",
     "prisma:generate": "npx prisma generate",
-    "prisma:studio": "npx prisma studio"
+    "prisma:studio": "npx prisma studio",
+    "schema:check": "ts-node src/schema/validateSchema.ts"
   },
   "prisma": {
     "seed": "node --loader ts-node/esm prisma/seed.ts"
