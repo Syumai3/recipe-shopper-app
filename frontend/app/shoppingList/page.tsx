@@ -22,7 +22,7 @@ import {
 import { useSession } from 'next-auth/react';
 
 export default function ShoppingList() {
-  const { data: session } = useSession();
+  const { data: session, status } = useSession();
   const { data: recipesData } = useGetUserRecipesQuery({
     variables: {
       userId: session?.user?.id ?? '',
@@ -57,6 +57,33 @@ export default function ShoppingList() {
     newSelected.set(recipeId, value);
     setSelectedRecipes(newSelected);
   };
+
+  if (status === 'unauthenticated') {
+    return (
+      <Box
+        p={5}
+        display="flex"
+        flexDirection="column"
+        alignItems="center"
+        justifyContent="center"
+        minH="200px"
+        textAlign="center"
+      >
+        <Heading size="md" mb={4} color="gray.600">
+          買い物リストを作成するにはログインが必要です
+        </Heading>
+      </Box>
+    );
+  }
+
+  // ローディング中の表示
+  if (status === 'loading') {
+    return (
+      <Box p={5}>
+        <Text>読み込み中...</Text>
+      </Box>
+    );
+  }
 
   return (
     <Box p={5}>

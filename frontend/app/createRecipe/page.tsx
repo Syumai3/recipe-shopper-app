@@ -1,6 +1,6 @@
 'use client';
 import { useSession } from 'next-auth/react';
-import { Box, useToast } from '@chakra-ui/react';
+import { Box, Heading, useToast, Text } from '@chakra-ui/react';
 import { useCreateRecipeMutation } from '@/src/generated/graphql';
 import { RecipeForm, RecipeFormData } from '../components/RecipeForm';
 
@@ -56,10 +56,27 @@ function CreateRecipe() {
 
   if (status === 'unauthenticated') {
     return (
-      <Box p={10}>
-        <Box fontSize="lg" mb={4}>
+      <Box
+        p={5}
+        display="flex"
+        flexDirection="column"
+        alignItems="center"
+        justifyContent="center"
+        minH="200px"
+        textAlign="center"
+      >
+        <Heading size="md" mb={4} color="gray.600">
           レシピを作成するにはログインが必要です
-        </Box>
+        </Heading>
+      </Box>
+    );
+  }
+
+  // ローディング中の表示
+  if (status === 'loading') {
+    return (
+      <Box p={5}>
+        <Text>読み込み中...</Text>
       </Box>
     );
   }
