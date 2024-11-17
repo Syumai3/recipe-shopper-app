@@ -1,5 +1,5 @@
 import { DateTimeResolver } from 'graphql-scalars';
-import { Mutation } from './mutation/mutation.js';
+import { Mutation } from './mutations/index.js';
 import { Recipe } from './resolvers/Recipe.js';
 import { User } from './resolvers/User.js';
 import { Query } from './queries/index.js';
