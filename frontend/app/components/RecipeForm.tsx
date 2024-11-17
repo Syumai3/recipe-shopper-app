@@ -89,7 +89,8 @@ export function RecipeForm({
         <FormLabel>材料</FormLabel>
         <VStack
           align="stretch"
-          maxH="200px"
+          minH={{ base: '200px', md: '300px' }}
+          maxH={{ base: '300px', md: '400px' }}
           overflowY="auto"
           borderWidth={1}
           borderRadius="md"
