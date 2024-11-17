@@ -14,6 +14,8 @@ import {
   Button,
   Checkbox,
   Divider,
+  Center,
+  Spinner,
 } from '@chakra-ui/react';
 import {
   useGetUserRecipesQuery,
@@ -76,12 +78,17 @@ export default function ShoppingList() {
     );
   }
 
-  // ローディング中の表示
   if (status === 'loading') {
     return (
-      <Box p={5}>
-        <Text>読み込み中...</Text>
-      </Box>
+      <Center h="200px">
+        <Spinner
+          thickness="4px"
+          speed="0.65s"
+          emptyColor="gray.200"
+          color="orange.500"
+          size="xl"
+        />
+      </Center>
     );
   }
 
